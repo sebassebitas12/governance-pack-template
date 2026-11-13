@@ -14,6 +14,8 @@ Usar únicamente datos ficticios durante las pruebas. Sebastián indica que la i
 
 Antes de trabajar con datos reales, definir ubicación, permisos, conservación, eliminación y destino de los datos, y verificar los controles.
 
+La descripción libre no solicita datos de salud ni otros datos sensibles, pero una persona podría incluirlos. Queda pendiente definir cómo detectarlos y manejarlos; no se ha establecido una necesidad de recolectarlos.
+
 En el código revisado, el navegador guarda borradores y solicitudes en almacenamiento local; la API demo guarda solicitudes en memoria y las pierde al reiniciarse. También existe código que intenta sincronizar solicitudes con una dirección de Supabase y un webhook n8n opcional que puede recibir la descripción. La existencia de ese código no equivale a una integración implementada o probada: no se verificó si algún servicio recibe datos ni en qué región opera.
 
 ## Alternativas descartadas
