@@ -1,31 +1,28 @@
-# ADR-0001: <modelo y proveedor de IA que usa el proyecto, en una frase>
+# ADR-0001: Herramientas de IA y selección del proveedor
 
 - Estado: Propuesto
-- Fecha: <AAAA-MM-DD>
-- Decide: <nombre y rol de quien responde por esta decisión>
-
-<!--
-Si su proyecto NO usa IA dentro del producto, este ADR pasa a ser:
-«Qué herramientas de IA usamos para programar y con qué reglas».
--->
+- Fecha: 2026-11-13
+- Decide: Sebastián, responsable del proyecto (propuesta pendiente de confirmar).
 
 ## Contexto
 
-<Qué necesita hacer la IA en su producto. Qué restricciones hay: costo, datos personales, latencia, idioma, si el cliente u organización aliada puso condiciones. Máximo 5 líneas.>
+Vértice está probando un asistente para orientar solicitudes de impresión 3D. El stack y los requisitos finales siguen pendientes; necesitamos distinguir una simulación de una integración real.
 
 ## Decisión
 
-<Qué modelo y qué proveedor, para qué tareas, y cómo se llama (solo desde el servidor, con qué llave). Frases verificables. Mal: «se usará IA de forma responsable». Bien: «el modelo X se llama solo desde `src/lib/ai/`, con la llave en una variable de entorno del servidor».>
+Para desarrollar y documentar se utiliza Codex con revisión humana; Sebastián decide qué cambios aceptar. En la prueba revisada, el asistente puede enviar la descripción a un webhook n8n configurado y, si no obtiene una respuesta válida, usa reglas locales. No se identificó en ese código qué modelo o proveedor hay detrás del webhook ni se verificó que esté activo.
+
+La elección de modelo, proveedor, costo, tratamiento de datos y ubicación de credenciales queda pendiente. Antes de integrar un modelo se propone evaluar necesidad, calidad, privacidad, costo y restricciones del curso; las credenciales privadas deberán permanecer en el servidor.
 
 ## Alternativas descartadas
 
-- <Otro modelo o proveedor>: <por qué no>.
-- <Otra opción, por ejemplo no usar IA para esta tarea>: <por qué no>.
+- Declarar un modelo específico como elegido sin verificar el flujo y sus condiciones: daría una impresión falsa de implementación.
+- Enviar datos reales durante las pruebas sin conocer su destino y tratamiento: expondría información innecesariamente.
 
 ## Consecuencias
 
-<Qué se gana y qué se pierde. Costo estimado por mes. Qué pasa si el proveedor falla o sube el precio. Qué queda pendiente.>
+Las reglas locales permiten explorar el flujo sin demostrar capacidades de un modelo. El costo mensual del eventual proveedor y el comportamiento final ante fallos siguen sin determinar.
 
 ## Cómo se verifica
 
-<Dónde en el código o en las pruebas se ve que esto se cumple: un archivo, un test, una regla de CI.>
+En el commit `6f06b98bcb45433a29a5ed6a8a09820c340a2213` de Vértice, revisar `experimentos/stack-mvp/frontend/src/lib/aiAssistantService.ts`. Cuando exista una integración, revisar además su configuración de servidor, proveedor, datos enviados y pruebas; no publicar credenciales.

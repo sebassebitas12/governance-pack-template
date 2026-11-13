@@ -1,25 +1,23 @@
 # Inventario de datos
 
-No se puede gobernar lo que no se sabe que se tiene. Una fila por cada dato que el sistema guarda, recibe o envía a un tercero, incluido el proveedor del modelo de IA.
+**Estado: borrador para revisión.** Describe el código de la prueba de Vértice CR en `main`, commit `6f06b98bcb45433a29a5ed6a8a09820c340a2213`, no un producto final ni una verificación de servicios activos. Según Sebastián, Supabase está previsto, pero aún no se ha implementado ni probado. El código contiene intentos de conexión: su presencia no confirma que se reciban o guarden datos. Los textos libres podrían incluir otros datos personales o sensibles.
 
 | Dato | ¿Personal? | Categoría (Ley 8968, art. 9) | De dónde viene | Dónde se guarda | ¿Sale a un tercero? ¿A quién? | Cuánto se conserva | Quién puede verlo |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| <dato> | <Sí o No> | <categoría, o «No aplica»> | <origen> | <servicio y tabla> | <No, o a quién y para qué> | <plazo> | <roles> |
-| <dato> | <Sí o No> | <categoría, o «No aplica»> | <origen> | <servicio y tabla> | <No, o a quién y para qué> | <plazo> | <roles> |
-
-<!--
-Ejemplo de fila bien llenada:
-| Texto del CV | Sí | Acceso restringido | Lo sube el usuario | Supabase Storage | Sí: proveedor de IA, solo para extraer campos | 30 días | El usuario |
-
-Categorías de la Ley 8968 (art. 9):
-- Sensibles: origen racial o étnico, opiniones políticas, convicciones religiosas, salud,
-  vida y orientación sexual; la definición del art. 3 incluye la condición socioeconómica
-  y la información biomédica o genética. Si aparece uno, expliquen en un ADR por qué lo necesitan.
-- Acceso restringido: de interés solo para la persona o la administración (correo, teléfono, dirección).
-- Acceso irrestricto: los que constan en bases públicas de acceso general.
-- Crediticios: comportamiento crediticio de la persona.
--->
+| Nombre del cliente | Sí | Acceso restringido | Formulario de solicitud | Borrador y solicitudes en almacenamiento local del navegador; código intenta sincronizar solicitudes con Supabase | El código intenta enviarlo a Supabase; recepción no verificada | Navegador: hasta borrar datos locales; plazo del servicio pendiente de verificar | Quien tenga acceso al perfil del navegador; acceso en Supabase pendiente de verificar |
+| Correo del cliente | Sí | Acceso restringido | Formulario de solicitud | Borrador y solicitudes en almacenamiento local del navegador; código intenta sincronizar solicitudes con Supabase | El código intenta enviarlo a Supabase; recepción no verificada | Navegador: hasta borrar datos locales; plazo del servicio pendiente de verificar | Quien tenga acceso al perfil del navegador; acceso en Supabase pendiente de verificar |
+| Descripción y aclaraciones de la solicitud | Sí | Acceso restringido; revisar si contiene datos sensibles | Texto libre de la persona cliente | Borrador y solicitudes en navegador; API demo en memoria; código intenta sincronizar solicitudes con Supabase | Si se configura el webhook n8n, el asistente envía la descripción; también se intenta enviar la solicitud a Supabase. Destinos efectivos pendientes de verificar | Navegador hasta borrar datos locales; memoria de API hasta reiniciar; terceros pendiente de verificar | Perfil del navegador; acceso en servicios pendiente de verificar |
+| Detalles de solicitud: producto, material, entorno, color y cantidad | Sí | Acceso restringido cuando se vinculan con una persona | Selección o texto de la persona y sugerencias aceptadas | Borrador y solicitudes en navegador; algunos campos en memoria de API demo; sincronización con Supabase intentada | El código intenta enviar la solicitud a Supabase; recepción pendiente de verificar | Navegador hasta borrar datos locales; memoria de API hasta reiniciar; terceros pendiente de verificar | Perfil del navegador; acceso en servicios pendiente de verificar |
+| Historial, estado y cotización de la solicitud | Sí | Acceso restringido cuando se vinculan con una persona | Acciones registradas en la prueba y datos de demostración | Solicitudes en navegador; código intenta sincronizarlas con Supabase | El código intenta enviarlos a Supabase; recepción pendiente de verificar | Navegador hasta borrar datos locales; terceros pendiente de verificar | Perfil del navegador; acceso en servicios pendiente de verificar |
+| Identificadores, clave de idempotencia y fechas | Sí | Acceso restringido cuando se vinculan con una persona | Generados por la aplicación | Solicitudes en navegador; claves y solicitudes de API demo en memoria; sincronización con Supabase intentada | El código intenta enviar identificadores y fechas a Supabase; recepción pendiente de verificar | Navegador hasta borrar datos locales; memoria de API hasta reiniciar; terceros pendiente de verificar | Perfil del navegador; acceso en servicios pendiente de verificar |
 
 ## Lo que NO recolectamos
 
-- <dato que decidieron no pedir>: <por qué no lo necesitan>
+- Datos de tarjetas de pago: no se identificó un campo de pago en la prueba revisada y los cobros reales están fuera del alcance inicial propuesto. Confirmar esta exclusión al definir el proyecto final.
+
+## Pendientes de verificación
+
+- Confirmar qué interfaz y flujo se conservarán: hay documentación y experimentos que no coinciden entre sí.
+- Verificar configuración real, región, permisos, retención y eliminación en Supabase y, si se activa, en n8n y sus proveedores. La presencia de código no prueba una conexión o un control efectivo.
+- Revisar datos de registros, diagnósticos, autenticación y cualquier otro servicio antes de considerar completo este inventario. No ingresar datos reales durante las pruebas.
+- Fuentes revisadas: `experimentos/stack-mvp/frontend/src/lib/requestDraftStore.ts`, `requestsStore.ts`, `aiAssistantService.ts`, migración SQL y `experimentos/stack-mvp/api/server.js` del commit indicado.

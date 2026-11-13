@@ -1,31 +1,32 @@
-# ADR-0003: <dónde se guardan los datos y a quién se envían, en una frase>
+# ADR-0003: Ubicación de los datos durante las pruebas
 
 - Estado: Propuesto
-- Fecha: <AAAA-MM-DD>
-- Decide: <nombre y rol de quien responde por esta decisión>
-
-<!--
-Si en su proyecto hay otra decisión más importante (por ejemplo, cómo manejan el texto
-que sube un usuario y que llega al modelo), pueden reemplazar este ADR por esa y
-explicarlo en el pull request.
--->
+- Fecha: 2026-11-13
+- Decide: Sebastián, responsable del proyecto (propuesta pendiente de confirmar).
 
 ## Contexto
 
-<Qué datos maneja el sistema (ver el inventario), qué servicios externos usa y si hay datos personales.>
+La prueba maneja datos como nombre, correo y descripción de la solicitud. El inventario identifica sus posibles ubicaciones; el stack definitivo y los controles reales todavía deben confirmarse.
 
 ## Decisión
 
-<En qué servicio y en qué región viven los datos. Qué datos se envían al proveedor de IA y cuáles nunca. Cuánto tiempo se conservan y cómo se borran. Quién puede leerlos (por ejemplo, políticas RLS).>
+Usar únicamente datos ficticios durante las pruebas. Sebastián indica que la intención es usar Supabase para almacenar los datos del proyecto, pero aún no se ha implementado ni probado esa integración. La región, los permisos y la política de conservación y eliminación quedan por definir; no se debe presentar Supabase como almacenamiento operativo.
+
+Antes de trabajar con datos reales, definir ubicación, permisos, conservación, eliminación y destino de los datos, y verificar los controles.
+
+La descripción libre no solicita datos de salud ni otros datos sensibles, pero una persona podría incluirlos. Queda pendiente definir cómo detectarlos y manejarlos; no se ha establecido una necesidad de recolectarlos.
+
+En el código revisado, el navegador guarda borradores y solicitudes en almacenamiento local; la API demo guarda solicitudes en memoria y las pierde al reiniciarse. También existe código que intenta sincronizar solicitudes con una dirección de Supabase y un webhook n8n opcional que puede recibir la descripción. La existencia de ese código no equivale a una integración implementada o probada: no se verificó si algún servicio recibe datos ni en qué región opera.
 
 ## Alternativas descartadas
 
-- <Otra forma de guardar o enviar los datos>: <por qué no>.
+- Usar datos reales antes de comprobar accesos y destinos: podría exponer información personal.
+- Dar por definitiva la ubicación de datos a partir de una variable o archivo de ejemplo: no confirma la configuración real.
 
 ## Consecuencias
 
-<Qué implica para la Ley 8968: consentimiento, transferencia internacional, derechos de acceso y supresión.>
+Los datos del navegador pueden permanecer hasta que se borren; los de memoria de la API demo desaparecen al reiniciarla. Los plazos de servicios externos, el acceso efectivo, las transferencias y los mecanismos de eliminación siguen pendientes. El proyecto debe revisar las obligaciones aplicables de la Ley 8968 antes de tratar datos personales reales.
 
 ## Cómo se verifica
 
-<La migración, la política de acceso o el test que lo demuestra.>
+En el commit `6f06b98bcb45433a29a5ed6a8a09820c340a2213` de Vértice, revisar `experimentos/stack-mvp/frontend/src/lib/requestDraftStore.ts`, `requestsStore.ts`, `aiAssistantService.ts` y `experimentos/stack-mvp/api/server.js`. La migración SQL describe políticas propuestas, pero no demuestra su aplicación en el servicio: comprobar configuración y permisos efectivos por separado.
